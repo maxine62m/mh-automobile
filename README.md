@@ -33,6 +33,13 @@ Le prix fournisseur reste côté serveur : le navigateur ne reçoit que le prix 
 
 En attendant, `src/providers/mock.js` fournit environ 95 annonces de démonstration : vrais modèles et vraies photos, prix et annonces fictifs.
 
+## Changer la voiture 3D (ex. BMW M3 Competition)
+
+1. Obtenir un modèle au format `.glb` avec une licence commerciale (achat CGTrader/TurboSquid, ou modèle CC BY).
+2. Le compresser : `npx @gltf-transform/cli optimize m3.glb public/models/car.glb --compress draco --texture-compress webp --texture-size 2048 --join false --instance false --palette false --flatten false`
+3. Dans `public/js/hero3d.js`, adapter l'objet `CAR` : noms des matériaux de carrosserie, phares, feux arrière et des 4 roues (l'avant doit pointer vers +Z, sinon ajouter une rotation).
+4. Mettre à jour les crédits du modèle dans `public/index.html` (pied de page).
+
 ## Crédits (obligatoires, ne pas retirer)
 
 - Photos : Wikimedia Commons, licences CC BY / CC BY-SA. Auteur et licence affichés sous chaque photo, détail dans `src/data/photos.json`.

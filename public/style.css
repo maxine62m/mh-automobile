@@ -74,9 +74,11 @@ img[src*=logo] { mix-blend-mode: lighten; }
 .hero-title .line { display: block; overflow: hidden; padding-bottom: .06em; }
 .hero-title .line > span { display: inline-block; transform: translateY(110%); transition: transform 1.3s var(--ease); }
 .hero-title em { font-style: normal; color: var(--red2); text-shadow: 0 0 40px rgba(255,42,64,.45); }
-.ready .hero-title .line > span { transform: none; }
-.ready .hero-title .line:nth-child(2) > span { transition-delay: .1s; }
-.ready .hero-title .line:nth-child(3) > span { transition-delay: .2s; }
+.intro-done .hero-title .line > span { transform: none; }
+.intro-done .hero-title .line:nth-child(2) > span { transition-delay: .1s; }
+.intro-done .hero-title .line:nth-child(3) > span { transition-delay: .2s; }
+.hero-bottom { opacity: 0; transition: opacity 1.2s .6s; }
+.intro-done .hero-bottom { opacity: 1; }
 .hero-lead { color: #b5b9bf; font-size: clamp(15px, 1.2vw, 18px); font-weight: 300; max-width: 480px; margin: 28px 0 38px; }
 .hero-cta { display: flex; gap: 14px; flex-wrap: wrap; }
 .paint-picker { position: absolute; right: var(--pad); top: 50%; transform: translateY(-50%); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 14px; }

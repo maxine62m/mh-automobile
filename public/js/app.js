@@ -20,7 +20,13 @@ function finishLoading() {
   loader.classList.add('done');
   document.body.classList.remove('is-loading');
   document.body.classList.add('ready');
-  $$('.hero .reveal').forEach((el, i) => setTimeout(() => el.classList.add('in'), 500 + i * 120));
+  // Le texte apparaît pendant que la voiture approche (ou tout de suite sans 3D)
+  const reveal = () => {
+    if (document.body.classList.contains('intro-done')) return;
+    document.body.classList.add('intro-done');
+    $$('.hero .reveal').forEach((el, i) => setTimeout(() => el.classList.add('in'), 300 + i * 120));
+  };
+  if (hero) { hero.start().then(reveal); setTimeout(reveal, 3600); } else reveal();
 }
 function noWebGL() {
   $('#hero').classList.add('no-webgl');
