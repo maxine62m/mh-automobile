@@ -5,10 +5,11 @@ Site d'import de véhicules d'Allemagne : recherche multicritère, fiche véhicu
 ## Lancer le site
 
 ```bash
+npm install      # une seule fois (installe three.js pour la 3D)
 npm start        # http://localhost:3000
 ```
 
-Aucune dépendance, Node 18 ou plus suffit.
+Node 18 ou plus.
 
 ## Où modifier quoi
 
@@ -30,4 +31,10 @@ Le prix fournisseur reste côté serveur : le navigateur ne reçoit que le prix 
    ```
 3. Ajuster si besoin `src/providers/mobilede.js` selon la réponse réelle de l'API.
 
-En attendant, `src/providers/mock.js` fournit 90 véhicules fictifs avec photos de démonstration.
+En attendant, `src/providers/mock.js` fournit environ 95 annonces de démonstration : vrais modèles et vraies photos, prix et annonces fictifs.
+
+## Crédits (obligatoires, ne pas retirer)
+
+- Photos : Wikimedia Commons, licences CC BY / CC BY-SA. Auteur et licence affichés sous chaque photo, détail dans `src/data/photos.json`.
+- Modèle 3D : « Car Concept » par Eric Chadwick / Darmstadt Graphics Group (Khronos glTF Sample Assets), CC BY 4.0.
+- Logos de marques : Simple Icons (CC0). Les marques appartiennent à leurs propriétaires.
