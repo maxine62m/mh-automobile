@@ -5,7 +5,6 @@ Site d'import de véhicules d'Allemagne : recherche multicritère, fiche véhicu
 ## Lancer le site
 
 ```bash
-npm install      # une seule fois (installe three.js pour la 3D)
 npm start        # http://localhost:3000
 ```
 
@@ -33,23 +32,16 @@ Le prix fournisseur reste côté serveur : le navigateur ne reçoit que le prix 
 
 En attendant, `src/providers/mock.js` fournit environ 95 annonces de démonstration : vrais modèles et vraies photos, prix et annonces fictifs.
 
-## Hero de la page d'accueil
+## Page d'accueil
 
-Deux modes, à choisir avec `data-mode` sur `<section id="hero">` dans `public/index.html` :
-- `photo` (actuel) : BMW M3 détourée (`public/img/m3.webp`), animation phares + approche en CSS (`public/js/heroPhoto.js`).
-- `3d` : modèle 3D three.js (`public/js/hero3d.js`).
+Animation d'ouverture (ligne rouge, logo qui s'ouvre, reflet argenté) puis recherche rapide.
+Visuel : section « Ouverture » à la fin de `public/style.css`. Rythme : `playIntro()` dans `public/js/app.js`.
 
-Pour changer la photo : image détourée sur fond transparent (PNG/WebP), vue de face, puis ajuster la position des phares (`.hl-l` / `.hl-r` dans `public/style.css`).
+## Version en ligne sans serveur
 
-## Changer la voiture 3D (ex. BMW M3 Competition)
-
-1. Obtenir un modèle au format `.glb` avec une licence commerciale (achat CGTrader/TurboSquid, ou modèle CC BY).
-2. Le compresser : `npx @gltf-transform/cli optimize m3.glb public/models/car.glb --compress draco --texture-compress webp --texture-size 2048 --join false --instance false --palette false --flatten false`
-3. Dans `public/js/hero3d.js`, adapter l'objet `CAR` : noms des matériaux de carrosserie, phares, feux arrière et des 4 roues (l'avant doit pointer vers +Z, sinon ajouter une rotation).
-4. Mettre à jour les crédits du modèle dans `public/index.html` (pied de page).
+`node scripts/build-static.js` génère `dist/` (site statique, véhicules en JSON avec prix marge incluse).
 
 ## Crédits (obligatoires, ne pas retirer)
 
 - Photos : Wikimedia Commons, licences CC BY / CC BY-SA. Auteur et licence affichés sous chaque photo, détail dans `src/data/photos.json`.
-- Modèle 3D : « Car Concept » par Eric Chadwick / Darmstadt Graphics Group (Khronos glTF Sample Assets), CC BY 4.0.
 - Logos de marques : Simple Icons (CC0). Les marques appartiennent à leurs propriétaires.

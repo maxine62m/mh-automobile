@@ -11,19 +11,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/style.css">
-  <link rel="preload" href="/img/m3.webp" as="image">
-  <script type="importmap">
-    { "imports": { "three": "/vendor/three/build/three.module.js", "three/addons/": "/vendor/three/examples/jsm/" } }
-  </script>
 </head>
-<body class="is-loading">
-  <!-- Écran de chargement -->
-  <div id="loader" class="loader">
-    <img src="/img/logo-alpha.png" alt="MH Automobile" class="loader-logo">
-    <div class="loader-bar"><span id="loader-progress"></span></div>
-    <p class="loader-text">Préparation du showroom</p>
-  </div>
-
+<body>
   <header class="topbar" id="topbar">
     <a href="#" class="brand" aria-label="Accueil"><img src="/img/logo-alpha.png" alt="MH Automobile"></a>
     <nav class="nav">
@@ -34,49 +23,27 @@
     <a class="btn btn-red btn-sm js-whatsapp" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" class="ico"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-3.9-4.7-4.1-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.2.5.1.6 0l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.1.1.6-.1 1.2Z"/></svg>Contact</a>
   </header>
 
-  <!-- HERO : data-mode="photo" (BMW M3 détourée) ou "3d" (modèle three.js) -->
-  <section class="hero" id="hero" data-mode="photo">
-    <canvas id="hero-canvas"></canvas>
-    <div class="hero-fallback"></div>
-    <div class="stage" id="stage">
-      <div class="stage-ceiling"><i></i><i></i></div>
-      <div class="stage-spot"></div>
-      <div class="stage-floor"></div>
-      <div class="stage-car">
-        <div class="car-tilt">
-          <div class="stage-ring"></div>
-          <div class="stage-glow"></div>
-          <div class="car-body">
-            <img src="/img/m3.webp" alt="BMW M3 Competition noire" class="car-img">
-            <span class="hl hl-l"></span><span class="hl hl-r"></span>
-          </div>
-          <span class="floor-light fl-l"></span><span class="floor-light fl-r"></span>
-          <img src="/img/m3.webp" class="car-reflect" alt="" aria-hidden="true">
-        </div>
-      </div>
-    </div>
-    <div class="hero-vignette"></div>
+  <!-- ACCUEIL : animation d'ouverture du logo, puis recherche -->
+  <section class="hero" id="hero">
+    <div class="intro-bg"></div>
+    <div class="intro-beams"><i></i><i></i></div>
+    <div class="intro-grid"></div>
     <h1 class="sr-only">MH Automobile : import de véhicules premium d'Allemagne</h1>
-
-    <!-- Apparaît quand la voiture est arrivée -->
-    <div class="hero-brand">
-      <img src="/img/logo-alpha.png" alt="MH Automobile">
+    <div class="intro">
+      <div class="intro-logo">
+        <img src="/img/logo-alpha.png" alt="MH Automobile">
+        <span class="intro-shine"></span>
+      </div>
+      <span class="intro-line"></span>
+      <p class="intro-tag">Import premium <b>·</b> Allemagne → France</p>
+      <form class="hero-search" id="hero-search" autocomplete="off">
+        <div class="hs-field"><label>Marque</label><select name="make"><option value="">Toutes</option></select></div>
+        <div class="hs-field"><label>Modèle</label><select name="model" disabled><option value="">Tous</option></select></div>
+        <div class="hs-field"><label>Budget max.</label><select name="priceMax" class="js-price"><option value="">Indifférent</option><option>20000</option><option>30000</option><option>40000</option><option>50000</option><option>75000</option><option>100000</option><option>150000</option></select></div>
+        <button class="btn btn-red" type="submit"><svg viewBox="0 0 24 24" class="ico"><path d="M10 2a8 8 0 1 0 4.9 14.3l5.4 5.4 1.4-1.4-5.4-5.4A8 8 0 0 0 10 2Zm0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12Z"/></svg>Rechercher</button>
+      </form>
+      <a href="#vehicules" class="hero-stock">Voir tout le stock <span id="hero-count"></span></a>
     </div>
-    <form class="hero-search" id="hero-search" autocomplete="off">
-      <div class="hs-field"><label>Marque</label><select name="make"><option value="">Toutes</option></select></div>
-      <div class="hs-field"><label>Modèle</label><select name="model" disabled><option value="">Tous</option></select></div>
-      <div class="hs-field"><label>Budget max.</label><select name="priceMax" class="js-price"><option value="">Indifférent</option><option>20000</option><option>30000</option><option>40000</option><option>50000</option><option>75000</option><option>100000</option><option>150000</option></select></div>
-      <button class="btn btn-red" type="submit"><svg viewBox="0 0 24 24" class="ico"><path d="M10 2a8 8 0 1 0 4.9 14.3l5.4 5.4 1.4-1.4-5.4-5.4A8 8 0 0 0 10 2Zm0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12Z"/></svg>Rechercher</button>
-    </form>
-    <a href="#vehicules" class="hero-stock">Voir tout le stock <span id="hero-count"></span></a>
-    <div class="paint-picker reveal" aria-label="Teinte de la voiture">
-      <span>Teinte</span>
-      <button data-paint="noir" class="active" style="--c:#0b0b0d" title="Noir"></button>
-      <button data-paint="graphite" style="--c:#2a2d32" title="Graphite"></button>
-      <button data-paint="argent" style="--c:#b9bdc3" title="Argent"></button>
-      <button data-paint="rouge" style="--c:#9e0b1f" title="Rouge MH"></button>
-    </div>
-    <a href="#vehicules" class="scroll-hint" aria-label="Défiler"><span></span></a>
   </section>
 
   <!-- Marques -->
@@ -160,7 +127,7 @@
   <footer class="footer">
     <img src="/img/logo-alpha.png" alt="MH Automobile">
     <p>© <span id="year"></span> MH Automobile · Achat · Vente · Recherche personnalisée</p>
-    <p class="credits">Photos : Wikimedia Commons (licences CC, auteurs indiqués sur chaque fiche) · Modèle 3D : « Car Concept » par Eric Chadwick / Darmstadt Graphics Group (Khronos glTF Sample Assets), CC BY 4.0 · Les marques citées appartiennent à leurs propriétaires.</p>
+    <p class="credits">Photos : Wikimedia Commons (licences CC, auteurs indiqués sur chaque fiche) · Les marques citées appartiennent à leurs propriétaires.</p>
   </footer>
 
   <!-- Fiche véhicule -->

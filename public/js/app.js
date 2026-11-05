@@ -38,61 +38,15 @@ let makes = {};
 let contact = {};
 let page = 1;
 
-/* ---------- Chargement + scène 3D ---------- */
-const loader = $('#loader');
-let loaded = false;
-function finishLoading() {
-  if (loaded) return;
-  loaded = true;
-  loader.classList.add('done');
-  document.body.classList.remove('is-loading');
-  document.body.classList.add('ready');
-  // Le texte apparaît pendant que la voiture approche (ou tout de suite sans 3D)
-  const reveal = () => {
-    if (document.body.classList.contains('intro-done')) return;
-    document.body.classList.add('intro-done');
-    $$('.hero .reveal').forEach((el, i) => setTimeout(() => el.classList.add('in'), 300 + i * 120));
-  };
-  if (hero) { hero.start().then(reveal); setTimeout(reveal, 6500); } else reveal();
+/* ---------- Animation d'ouverture ---------- */
+// Les étapes sont des classes posées sur <body> ; tout le visuel est en CSS (style.css, « Ouverture »).
+function playIntro() {
+  const body = document.body;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return body.classList.add('i-line', 'i-logo', 'i-shine', 'i-done');
+  const steps = [['i-line', 150], ['i-logo', 750], ['i-shine', 1500], ['i-done', 2300]];
+  for (const [cls, ms] of steps) setTimeout(() => body.classList.add(cls), ms);
 }
-function noWebGL() {
-  $('#hero').classList.add('no-webgl');
-  finishLoading();
-}
-setTimeout(finishLoading, 9000); // sécurité si le chargement tarde
-
-// Mode du hero : "photo" (BMW M3 détourée, animation cinéma) ou "3d" (modèle 3D three.js)
-const HERO_MODE = $('#hero').dataset.mode || 'photo';
-let hero = null;
-if (HERO_MODE === 'photo') {
-  $('#hero-canvas').remove();
-  $('.paint-picker').remove();
-  import('./heroPhoto.js').then(({ initHeroPhoto }) => {
-    hero = initHeroPhoto($('#stage'));
-    const img = $('#stage .car-img');
-    const go = () => { $('#loader-progress').style.width = '100%'; setTimeout(finishLoading, 350); };
-    img.complete ? go() : img.addEventListener('load', go, { once: true });
-  }).catch(noWebGL);
-} else {
-  $('#stage').remove();
-  import('./hero3d.js').then(({ initHero }) => {
-    hero = initHero({
-      canvas: $('#hero-canvas'),
-      onProgress: (p) => ($('#loader-progress').style.width = `${Math.round(p * 100)}%`),
-      onReady: () => setTimeout(finishLoading, 350),
-      onError: noWebGL,
-    });
-    if (!hero) noWebGL();
-  }).catch(noWebGL);
-}
-
-$('.paint-picker')?.addEventListener('click', (e) => {
-  const b = e.target.closest('button');
-  if (!b || !hero) return;
-  $('.paint-picker .active')?.classList.remove('active');
-  b.classList.add('active');
-  hero.setPaint(b.dataset.paint);
-});
+playIntro();
 
 /* ---------- Barre du haut + apparitions au scroll ---------- */
 const topbar = $('#topbar');

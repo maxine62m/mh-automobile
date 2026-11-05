@@ -7,8 +7,7 @@ const provider = require(`./src/providers/${config.provider}`);
 
 const PORT = process.env.PORT || 3000;
 const PUBLIC = path.join(__dirname, 'public');
-const THREE = path.join(__dirname, 'node_modules', 'three');
-const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.png': 'image/png', '.svg': 'image/svg+xml', '.ico': 'image/x-icon', '.jpg': 'image/jpeg', '.glb': 'model/gltf-binary', '.wasm': 'application/wasm', '.json': 'application/json' };
+const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.png': 'image/png', '.svg': 'image/svg+xml', '.ico': 'image/x-icon', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.json': 'application/json' };
 const PAGE_SIZE = 12;
 
 // Ce qui est envoyé au client : prix fournisseur retiré, prix avec marge ajouté
@@ -70,8 +69,8 @@ const server = http.createServer(async (req, res) => {
       return v ? json(res, 200, toPublic(v)) : json(res, 404, { error: 'Véhicule introuvable' });
     }
 
-    // Fichiers statiques (+ three.js servi depuis node_modules)
-    const [root, rel] = p.startsWith('/vendor/three/') ? [THREE, p.slice(13)] : [PUBLIC, p === '/' ? 'index.html' : p];
+    // Fichiers statiques
+    const [root, rel] = [PUBLIC, p === '/' ? 'index.html' : p];
     const file = path.normalize(path.join(root, decodeURIComponent(rel)));
     if (!file.startsWith(root)) return json(res, 403, { error: 'Interdit' });
     fs.readFile(file, (err, data) => {
@@ -81,7 +80,7 @@ const server = http.createServer(async (req, res) => {
       }
       const ext = path.extname(file);
       res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream',
-        'Cache-Control': ['.jpg', '.glb', '.wasm', '.svg', '.png'].includes(ext) ? 'public, max-age=604800' : 'no-cache' });
+        'Cache-Control': ['.jpg', '.webp', '.svg', '.png'].includes(ext) ? 'public, max-age=604800' : 'no-cache' });
       res.end(data);
     });
   } catch (e) {

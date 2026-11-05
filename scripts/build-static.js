@@ -17,12 +17,11 @@ const rel = (s) => s.replace(/(["'(])\/(img|photos|brands|js|style\.css)/g, '$1$
   fs.mkdirSync(path.join(DIST, 'data'), { recursive: true });
 
   // Fichiers du site, chemins rendus relatifs
-  for (const f of ['index.html', 'style.css', 'js/app.js', 'js/heroPhoto.js']) {
+  for (const f of ['index.html', 'style.css', 'js/app.js']) {
     let s = fs.readFileSync(path.join(PUB, f), 'utf8');
     s = rel(s);
     if (f === 'index.html') {
-      s = s.replace(/\s*<script type="importmap">[\s\S]*?<\/script>/, '')
-        .replace('<script type="module"', '<script>window.MH_STATIC = true;</script>\n  <script type="module"');
+      s = s.replace('<script type="module"', '<script>window.MH_STATIC = true;</script>\n  <script type="module"');
     }
     fs.mkdirSync(path.dirname(path.join(DIST, f)), { recursive: true });
     fs.writeFileSync(path.join(DIST, f), s);
