@@ -277,3 +277,66 @@ select:disabled { opacity: .4; cursor: default; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+/* ---------- Hero « photo cinéma » (BMW M3) ---------- */
+.stage { position: absolute; inset: 0; overflow: hidden; perspective: 1600px; background: radial-gradient(ellipse 70% 55% at 64% 62%, #0d0d10, #030304 70%); }
+.stage-ceiling { position: absolute; top: 15%; left: 46%; right: 6%; display: flex; justify-content: space-between; }
+.stage-ceiling i { width: 26%; height: 3px; border-radius: 3px; background: #fff; opacity: 0; box-shadow: 0 0 18px 3px rgba(255,255,255,.45), 0 0 60px 10px rgba(255,255,255,.12); transition: opacity .25s; }
+.s-studio .stage-ceiling i { opacity: .9; }
+.s-studio .stage-ceiling i:nth-child(1) { transition-delay: .05s; }
+.s-studio .stage-ceiling i:nth-child(2) { transition-delay: .35s; }
+.s-studio .stage-ceiling i:nth-child(3) { transition-delay: .65s; }
+.stage-spot { position: absolute; inset: 0; opacity: 0; transition: opacity 2.5s .4s;
+  background: radial-gradient(ellipse 30% 70% at 64% 8%, rgba(255,255,255,.09), transparent 70%), radial-gradient(ellipse 45% 12% at 64% 82%, rgba(255,255,255,.06), transparent 70%); }
+.s-studio .stage-spot { opacity: 1; }
+.stage-floor { position: absolute; left: 0; right: 0; bottom: 0; height: 30%; background: linear-gradient(180deg, transparent, rgba(255,255,255,.015) 2px, transparent 40%); border-top: 1px solid rgba(255,255,255,.03); }
+
+/* Voiture : position finale + état de départ (loin, dans le noir) */
+.stage-car { position: absolute; left: 68%; bottom: 17%; width: min(44vw, 740px); transform-origin: 50% 100%;
+  transform: translateX(-50%) translateY(-11%) scale(.34); transition: transform 3s cubic-bezier(.2,.75,.15,1); }
+.s-drive .stage-car { transform: translateX(-50%) translateY(calc(var(--scroll, 0) * -40px)) scale(calc(1 + var(--scroll, 0) * .08)); }
+/* Seule la carrosserie est dans le noir au départ : les phares restent visibles */
+.car-img, .car-reflect { transition: filter 2.6s cubic-bezier(.3,.6,.2,1), opacity 2.6s; }
+.car-tilt { position: relative; transform-style: preserve-3d; transform: translateX(var(--px, 0)) rotateX(var(--rx, 0)) rotateY(var(--ry, 0)); }
+.car-body { position: relative; z-index: 2; transform-origin: 50% 90%; }
+.car-img { display: block; width: 100%; height: auto; filter: brightness(.05) blur(1px); }
+.s-drive .car-img { filter: brightness(1) blur(0) drop-shadow(0 30px 30px rgba(0,0,0,.8)); }
+.engine .car-body { animation: engine .09s linear infinite; }
+@keyframes engine { 50% { transform: translateY(1.5px); } }
+.s-arrived .car-body { animation: brake .9s cubic-bezier(.3,.6,.3,1); }
+@keyframes brake { 30% { transform: translateY(1.6%) rotateX(4deg); } 65% { transform: translateY(-.4%) rotateX(-1deg); } }
+
+/* Phares : halo + reflet anamorphique, avec clignotement d'allumage */
+.hl { position: absolute; z-index: 3; width: 20%; aspect-ratio: 2.3; transform: translate(-50%, -50%); border-radius: 50%; pointer-events: none; opacity: 0; mix-blend-mode: screen;
+  background: radial-gradient(ellipse at center, rgba(255,255,255,1) 0%, rgba(215,232,255,.85) 14%, rgba(150,190,255,.35) 38%, transparent 70%); }
+.hl::after { content: ''; position: absolute; left: 50%; top: 50%; width: 420%; height: 4px; transform: translate(-50%, -50%); border-radius: 4px;
+  background: linear-gradient(90deg, transparent, rgba(160,200,255,.35) 30%, rgba(255,255,255,.9) 50%, rgba(160,200,255,.35) 70%, transparent); filter: blur(1px); }
+.hl-l { left: 15.5%; top: 55%; }
+.hl-r { left: 86.5%; top: 54.5%; }
+.s-lights .hl { animation: lightson .55s steps(1) forwards, glow 4s 2s ease-in-out infinite; }
+@keyframes lightson { 0% { opacity: 1; } 15% { opacity: .1; } 30% { opacity: 1; } 45% { opacity: .4; } 60%, 100% { opacity: 1; } }
+@keyframes glow { 0%, 100% { opacity: 1; } 50% { opacity: .82; } }
+
+/* Lumière des phares sur le sol + reflet de la voiture */
+.floor-light { position: absolute; z-index: 1; top: 88%; width: 46%; aspect-ratio: 2.4; border-radius: 50%; opacity: 0; transform: translateX(-50%); transition: opacity .3s;
+  background: radial-gradient(ellipse at 50% 30%, rgba(200,220,255,.22), transparent 70%); }
+.fl-l { left: 22%; } .fl-r { left: 78%; }
+.s-lights .floor-light { opacity: 1; }
+.car-reflect { position: absolute; z-index: 0; left: 0; top: 99%; width: 100%; transform: scaleY(-1); opacity: 0; filter: blur(2px) brightness(.7);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 55%, #000); mask-image: linear-gradient(to bottom, transparent 55%, #000); }
+.stage-glow { position: absolute; z-index: 0; left: 50%; bottom: -12%; width: 120%; aspect-ratio: 3; transform: translateX(-50%); border-radius: 50%; opacity: 0; transition: opacity 1.6s;
+  background: radial-gradient(ellipse at center, rgba(208,20,44,.45), rgba(208,20,44,.1) 45%, transparent 70%); }
+.stage-ring { position: absolute; z-index: 0; left: 50%; bottom: -9%; width: 128%; aspect-ratio: 4.2; transform: translateX(-50%) scale(.8); border-radius: 50%; opacity: 0;
+  border: 1.5px solid rgba(255,42,64,.85); box-shadow: 0 0 22px rgba(255,42,64,.55), inset 0 0 22px rgba(255,42,64,.25); transition: opacity 1.2s, transform 1.6s var(--ease); }
+.s-arrived .stage-glow { opacity: 1; }
+.s-arrived .stage-ring { opacity: 1; transform: translateX(-50%) scale(1); }
+.s-done .stage-ring { animation: ring 3s ease-in-out infinite; }
+@keyframes ring { 50% { opacity: .55; } }
+
+@media (max-width: 800px) {
+  .stage-car { left: 50%; bottom: auto; top: 15%; width: 82vw; transform-origin: 50% 60%; }
+  .hero[data-mode=photo] .hero-content .eyebrow { display: none; }
+  .stage-ceiling { left: 10%; right: 10%; top: 10.5%; }
+}
+
+.s-drive .car-reflect { opacity: .22; }

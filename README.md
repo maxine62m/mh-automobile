@@ -33,6 +33,14 @@ Le prix fournisseur reste côté serveur : le navigateur ne reçoit que le prix 
 
 En attendant, `src/providers/mock.js` fournit environ 95 annonces de démonstration : vrais modèles et vraies photos, prix et annonces fictifs.
 
+## Hero de la page d'accueil
+
+Deux modes, à choisir avec `data-mode` sur `<section id="hero">` dans `public/index.html` :
+- `photo` (actuel) : BMW M3 détourée (`public/img/m3.webp`), animation phares + approche en CSS (`public/js/heroPhoto.js`).
+- `3d` : modèle 3D three.js (`public/js/hero3d.js`).
+
+Pour changer la photo : image détourée sur fond transparent (PNG/WebP), vue de face, puis ajuster la position des phares (`.hl-l` / `.hl-r` dans `public/style.css`).
+
 ## Changer la voiture 3D (ex. BMW M3 Competition)
 
 1. Obtenir un modèle au format `.glb` avec une licence commerciale (achat CGTrader/TurboSquid, ou modèle CC BY).

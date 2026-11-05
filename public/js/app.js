@@ -32,20 +32,34 @@ function noWebGL() {
   $('#hero').classList.add('no-webgl');
   finishLoading();
 }
-setTimeout(finishLoading, 9000); // sécurité si le modèle tarde
+setTimeout(finishLoading, 9000); // sécurité si le chargement tarde
 
+// Mode du hero : "photo" (BMW M3 détourée, animation cinéma) ou "3d" (modèle 3D three.js)
+const HERO_MODE = $('#hero').dataset.mode || 'photo';
 let hero = null;
-import('./hero3d.js').then(({ initHero }) => {
-  hero = initHero({
-    canvas: $('#hero-canvas'),
-    onProgress: (p) => ($('#loader-progress').style.width = `${Math.round(p * 100)}%`),
-    onReady: () => setTimeout(finishLoading, 350),
-    onError: noWebGL,
-  });
-  if (!hero) noWebGL();
-}).catch(noWebGL);
+if (HERO_MODE === 'photo') {
+  $('#hero-canvas').remove();
+  $('.paint-picker').remove();
+  import('./heroPhoto.js').then(({ initHeroPhoto }) => {
+    hero = initHeroPhoto($('#stage'));
+    const img = $('#stage .car-img');
+    const go = () => { $('#loader-progress').style.width = '100%'; setTimeout(finishLoading, 350); };
+    img.complete ? go() : img.addEventListener('load', go, { once: true });
+  }).catch(noWebGL);
+} else {
+  $('#stage').remove();
+  import('./hero3d.js').then(({ initHero }) => {
+    hero = initHero({
+      canvas: $('#hero-canvas'),
+      onProgress: (p) => ($('#loader-progress').style.width = `${Math.round(p * 100)}%`),
+      onReady: () => setTimeout(finishLoading, 350),
+      onError: noWebGL,
+    });
+    if (!hero) noWebGL();
+  }).catch(noWebGL);
+}
 
-$('.paint-picker').addEventListener('click', (e) => {
+$('.paint-picker')?.addEventListener('click', (e) => {
   const b = e.target.closest('button');
   if (!b || !hero) return;
   $('.paint-picker .active')?.classList.remove('active');
