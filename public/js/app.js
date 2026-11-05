@@ -7,6 +7,33 @@ const BRAND_LOGOS = { Audi: 'audi', BMW: 'bmw', 'Mercedes-Benz': 'mercedes-benz'
 const ARROW = '<svg viewBox="0 0 16 16"><path d="M2 8h12M9 3l5 5-5 5"/></svg>';
 
 const form = $('#search');
+
+/* ---------- Données : API du serveur, ou fichier JSON en version statique (sans serveur) ---------- */
+const STATIC = !!window.MH_STATIC;
+let staticData = null;
+async function api(path) {
+  if (!STATIC) return fetch('/api/' + path).then((r) => r.json());
+  staticData ||= await fetch('data/vehicles.json').then((r) => r.json());
+  const [route, query = ''] = path.split('?');
+  const list = staticData.vehicles;
+  if (route === 'config') return { contact: staticData.contact };
+  if (route === 'makes') {
+    const out = {};
+    for (const v of list) (out[v.make] ||= new Set()).add(v.model);
+    return Object.fromEntries(Object.keys(out).sort().map((m) => [m, [...out[m]].sort()]));
+  }
+  if (route.startsWith('vehicle/')) return list.find((v) => v.id === decodeURIComponent(route.slice(8)));
+  // Recherche : mêmes règles que le serveur (server.js)
+  const f = Object.fromEntries(new URLSearchParams(query));
+  const num = (k) => (f[k] ? Number(f[k]) : null);
+  const res = list.filter((v) => (!f.make || v.make === f.make) && (!f.model || v.model === f.model) && (!f.fuel || v.fuel === f.fuel)
+    && (!f.gearbox || v.gearbox === f.gearbox) && (!f.body || v.body === f.body) && (!num('yearMin') || v.year >= num('yearMin'))
+    && (!num('yearMax') || v.year <= num('yearMax')) && (!num('priceMax') || v.price <= num('priceMax')) && (!num('kmMax') || v.km <= num('kmMax')));
+  const sorters = { price_asc: (a, b) => a.price - b.price, price_desc: (a, b) => b.price - a.price, year_desc: (a, b) => b.year - a.year, km_asc: (a, b) => a.km - b.km };
+  res.sort(sorters[f.sort] || sorters.price_asc);
+  const pg = Math.max(1, num('page') || 1);
+  return { total: res.length, page: pg, pages: Math.max(1, Math.ceil(res.length / 12)), results: res.slice((pg - 1) * 12, pg * 12) };
+}
 let makes = {};
 let contact = {};
 let page = 1;
@@ -78,7 +105,7 @@ $$('.reveal').filter((el) => !el.closest('.hero')).forEach((el) => io.observe(el
 /* ---------- Initialisation des données ---------- */
 async function init() {
   $('#year').textContent = new Date().getFullYear();
-  [makes, { contact }] = await Promise.all([fetch('/api/makes').then((r) => r.json()), fetch('/api/config').then((r) => r.json())]);
+  [makes, { contact }] = await Promise.all([api('makes'), api('config')]);
 
   form.make.innerHTML += Object.keys(makes).map((m) => `<option>${esc(m)}</option>`).join('');
   const now = new Date().getFullYear();
@@ -89,7 +116,7 @@ async function init() {
 
   // Bandeau des marques (dupliqué pour une boucle continue)
   const logos = Object.keys(makes).map((m) => `<button class="brand-logo" data-make="${esc(m)}">
-    <i class="mask" style="--src:url('/brands/${BRAND_LOGOS[m] || 'audi'}.svg')"></i><b>${esc(m)}</b></button>`).join('');
+    <i class="mask" style="--src:url('${STATIC ? '' : '/'}brands/${BRAND_LOGOS[m] || 'audi'}.svg')"></i><b>${esc(m)}</b></button>`).join('');
   $('#brands').innerHTML = logos + logos;
 
   $$('.js-whatsapp').forEach((a) => (a.href = `https://wa.me/${contact.whatsapp}`));
@@ -113,7 +140,7 @@ function setBody(value) {
 
 // Les critères restent dans l'URL : une recherche peut être partagée
 function readUrl() {
-  const q = new URLSearchParams(location.search);
+  const q = new URLSearchParams(STATIC ? '' : location.search);
   if (q.get('make')) { form.make.value = q.get('make'); fillModels(); }
   for (const [k, v] of q) if (form[k] && k !== 'make' && form[k].tagName) form[k].value = v;
   setBody(q.get('body') || '');
@@ -126,13 +153,13 @@ async function search(scroll = true) {
   const params = new URLSearchParams();
   for (const [k, v] of new FormData(form)) if (v && !(k === 'sort' && v === 'price_asc')) params.set(k, v);
   if (page > 1) params.set('page', page);
-  history.replaceState(null, '', params.size ? '?' + params : location.pathname);
+  if (!STATIC) history.replaceState(null, '', params.size ? '?' + params : location.pathname);
 
   const id = ++reqId;
   const results = $('#results');
   if (!results.children.length) results.innerHTML = '<div class="skeleton"></div>'.repeat(6);
   results.style.opacity = '.4';
-  const data = await fetch('/api/search?' + params).then((r) => r.json());
+  const data = await api('search?' + params);
   if (id !== reqId) return;
   results.style.opacity = '';
   $('#count').textContent = data.total;
@@ -212,7 +239,7 @@ $('#brands').addEventListener('click', (e) => {
 /* ---------- Fiche véhicule ---------- */
 let gallery = { i: 0, n: 0 };
 async function openVehicle(id) {
-  const v = await fetch('/api/vehicle/' + encodeURIComponent(id)).then((r) => r.json());
+  const v = await api('vehicle/' + encodeURIComponent(id));
   const msg = encodeURIComponent(`Bonjour, je suis intéressé(e) par : ${v.make} ${v.model} ${v.version}, ${v.year}, ${kms(v.km)} (réf. ${v.id}) à ${eur(v.price)}.`);
   gallery = { i: 0, n: v.images.length, credits: v.credits };
   $('#modal-content').innerHTML = `<div class="detail">
