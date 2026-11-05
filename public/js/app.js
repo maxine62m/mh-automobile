@@ -26,7 +26,7 @@ function finishLoading() {
     document.body.classList.add('intro-done');
     $$('.hero .reveal').forEach((el, i) => setTimeout(() => el.classList.add('in'), 300 + i * 120));
   };
-  if (hero) { hero.start().then(reveal); setTimeout(reveal, 3600); } else reveal();
+  if (hero) { hero.start().then(reveal); setTimeout(reveal, 6500); } else reveal();
 }
 function noWebGL() {
   $('#hero').classList.add('no-webgl');
@@ -83,7 +83,8 @@ async function init() {
   form.make.innerHTML += Object.keys(makes).map((m) => `<option>${esc(m)}</option>`).join('');
   const now = new Date().getFullYear();
   for (let y = now; y >= 2015; y--) form.yearMin.add(new Option(y, y));
-  for (const o of form.priceMax.options) if (o.value) o.text = eur(+o.value);
+  for (const sel of $$('.js-price')) for (const o of sel.options) if (o.value) o.text = eur(+o.value);
+  heroForm.make.innerHTML += Object.keys(makes).map((m) => `<option>${esc(m)}</option>`).join('');
   for (const o of form.kmMax.options) if (o.value) o.text = kms(+o.value);
 
   // Bandeau des marques (dupliqué pour une boucle continue)
@@ -135,6 +136,7 @@ async function search(scroll = true) {
   if (id !== reqId) return;
   results.style.opacity = '';
   $('#count').textContent = data.total;
+  if (!params.size) $('#hero-count').textContent = `(${data.total})`;
   results.innerHTML = data.results.length ? data.results.map(card).join('')
     : `<div class="empty"><p>Aucun véhicule ne correspond à ces critères pour le moment.</p><a class="btn btn-red" href="#sur-mesure">Nous le trouvons pour vous</a></div>`;
   $$('.card img', results).forEach((img) => (img.complete ? img.classList.add('loaded') : img.addEventListener('load', () => img.classList.add('loaded'))));
@@ -281,6 +283,24 @@ $('#contact-form').addEventListener('submit', (e) => {
   const d = Object.fromEntries(new FormData(e.target));
   const text = `Demande de recherche personnalisée\nNom : ${d.name}\nTél : ${d.phone}\nVéhicule : ${d.vehicle}\nBudget : ${d.budget}\nAnnée min. : ${d.year}\n${d.message}`;
   window.open(`https://wa.me/${contact.whatsapp}?text=${encodeURIComponent(text)}`, '_blank');
+});
+
+/* ---------- Recherche rapide de l'accueil ---------- */
+const heroForm = $('#hero-search');
+heroForm.make.addEventListener('change', () => {
+  const models = makes[heroForm.make.value] || [];
+  heroForm.model.innerHTML = '<option value="">Tous</option>' + models.map((m) => `<option>${esc(m)}</option>`).join('');
+  heroForm.model.disabled = !models.length;
+});
+heroForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  // Reporte les critères dans la recherche complète, puis descend sur les résultats
+  form.make.value = heroForm.make.value;
+  fillModels();
+  form.model.value = heroForm.model.value;
+  form.priceMax.value = heroForm.priceMax.value;
+  page = 1;
+  search(true);
 });
 
 init();

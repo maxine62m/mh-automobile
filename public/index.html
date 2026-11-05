@@ -19,13 +19,13 @@
 <body class="is-loading">
   <!-- Écran de chargement -->
   <div id="loader" class="loader">
-    <img src="/img/logo.png" alt="MH Automobile" class="loader-logo">
+    <img src="/img/logo-alpha.png" alt="MH Automobile" class="loader-logo">
     <div class="loader-bar"><span id="loader-progress"></span></div>
     <p class="loader-text">Préparation du showroom</p>
   </div>
 
   <header class="topbar" id="topbar">
-    <a href="#" class="brand" aria-label="Accueil"><img src="/img/logo.png" alt="MH Automobile"></a>
+    <a href="#" class="brand" aria-label="Accueil"><img src="/img/logo-alpha.png" alt="MH Automobile"></a>
     <nav class="nav">
       <a href="#vehicules">Véhicules</a>
       <a href="#methode">Notre méthode</a>
@@ -39,7 +39,7 @@
     <canvas id="hero-canvas"></canvas>
     <div class="hero-fallback"></div>
     <div class="stage" id="stage">
-      <div class="stage-ceiling"><i></i><i></i><i></i></div>
+      <div class="stage-ceiling"><i></i><i></i></div>
       <div class="stage-spot"></div>
       <div class="stage-floor"></div>
       <div class="stage-car">
@@ -56,19 +56,19 @@
       </div>
     </div>
     <div class="hero-vignette"></div>
-    <div class="hero-content">
-      <p class="eyebrow reveal">Import premium · Allemagne → France</p>
-      <h1 class="hero-title">
-        <span class="line"><span>L'excellence</span></span>
-        <span class="line"><span class="silver">allemande,</span></span>
-        <span class="line"><span>livrée <em>chez vous.</em></span></span>
-      </h1>
-      <p class="hero-lead reveal">Nous sélectionnons, vérifions et importons votre véhicule depuis l'Allemagne. Un prix clair, tout compris, sans surprise.</p>
-      <div class="hero-cta reveal">
-        <a href="#vehicules" class="btn btn-red">Voir les véhicules</a>
-        <a href="#sur-mesure" class="btn btn-glass">Recherche sur mesure</a>
-      </div>
+    <h1 class="sr-only">MH Automobile : import de véhicules premium d'Allemagne</h1>
+
+    <!-- Apparaît quand la voiture est arrivée -->
+    <div class="hero-brand">
+      <img src="/img/logo-alpha.png" alt="MH Automobile">
     </div>
+    <form class="hero-search" id="hero-search" autocomplete="off">
+      <div class="hs-field"><label>Marque</label><select name="make"><option value="">Toutes</option></select></div>
+      <div class="hs-field"><label>Modèle</label><select name="model" disabled><option value="">Tous</option></select></div>
+      <div class="hs-field"><label>Budget max.</label><select name="priceMax" class="js-price"><option value="">Indifférent</option><option>20000</option><option>30000</option><option>40000</option><option>50000</option><option>75000</option><option>100000</option><option>150000</option></select></div>
+      <button class="btn btn-red" type="submit"><svg viewBox="0 0 24 24" class="ico"><path d="M10 2a8 8 0 1 0 4.9 14.3l5.4 5.4 1.4-1.4-5.4-5.4A8 8 0 0 0 10 2Zm0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12Z"/></svg>Rechercher</button>
+    </form>
+    <a href="#vehicules" class="hero-stock">Voir tout le stock <span id="hero-count"></span></a>
     <div class="paint-picker reveal" aria-label="Teinte de la voiture">
       <span>Teinte</span>
       <button data-paint="noir" class="active" style="--c:#0b0b0d" title="Noir"></button>
@@ -76,12 +76,7 @@
       <button data-paint="argent" style="--c:#b9bdc3" title="Argent"></button>
       <button data-paint="rouge" style="--c:#9e0b1f" title="Rouge MH"></button>
     </div>
-    <div class="hero-bottom">
-      <div class="hero-stat"><b>Prix</b><span>tout compris</span></div>
-      <div class="hero-stat"><b>Contrôle</b><span>avant achat</span></div>
-      <div class="hero-stat"><b>Livraison</b><span>partout en France</span></div>
-      <a href="#vehicules" class="scroll-hint" aria-label="Défiler"><span></span></a>
-    </div>
+    <a href="#vehicules" class="scroll-hint" aria-label="Défiler"><span></span></a>
   </section>
 
   <!-- Marques -->
@@ -163,7 +158,7 @@
   </section>
 
   <footer class="footer">
-    <img src="/img/logo.png" alt="MH Automobile">
+    <img src="/img/logo-alpha.png" alt="MH Automobile">
     <p>© <span id="year"></span> MH Automobile · Achat · Vente · Recherche personnalisée</p>
     <p class="credits">Photos : Wikimedia Commons (licences CC, auteurs indiqués sur chaque fiche) · Modèle 3D : « Car Concept » par Eric Chadwick / Darmstadt Graphics Group (Khronos glTF Sample Assets), CC BY 4.0 · Les marques citées appartiennent à leurs propriétaires.</p>
   </footer>
